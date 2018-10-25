@@ -5,7 +5,7 @@ var env = require('./env');
 function getCurrentConnection(config, callback) {
   var commandStr = "nmcli --terse --fields active,ssid,bssid,mode,chan,freq,signal,security,wpa-flags,rsn-flags,device device wifi";
   if (config.iface) {
-      commandStr += ' ifname '+config.iface;
+      commandStr += ' list ifname '+config.iface;
   }
 
   exec(commandStr, env, function(err, scanResults) {
@@ -19,7 +19,7 @@ function getCurrentConnection(config, callback) {
       for (var i = 0 ; i < lines.length ; i++) {
         if (lines[i] != '') {
           var fields = lines[i].replace(/\\\:/g, '&&').split(':');
-          if (fields[0] == 'yes') {
+            if (fields.length > 8 && fields[0] == 'yes') {
             networks.push({
               iface: fields[10].replace(/\&\&/g, ':'),
               ssid: fields[1].replace(/\&\&/g, ':'),
